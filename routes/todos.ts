@@ -9,14 +9,17 @@ import {
 	updateSingleTodo,
 	removeSingleTodo,
 } from '../controllers/todos';
+import { EnvironmentService } from '../models/EnvironmentService';
 
 const todos = express.Router();
 
 configureEnv();
 
+const config = new EnvironmentService(process.env);
+
 todos.use(
 	cors({
-		origin: process.env.UI_ORIGIN_URL,
+		origin: config.get('UI_ORIGIN_URL'),
 	})
 );
 

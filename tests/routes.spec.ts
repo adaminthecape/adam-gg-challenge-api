@@ -5,21 +5,24 @@ import { Database } from '../models/Database';
 import defaultTodos from '../defaultData/todos.json';
 import defaultUsers from '../defaultData/users.json';
 import { Todo, User } from '../sharedTypes';
+import { EnvironmentService } from '../models/EnvironmentService';
 
 configureEnv();
+
+const config = new EnvironmentService(process.env);
 
 class MockApiAdapter {
 	public static get(path: string): any {
 		return request(app)
 			.get(path)
-			.set('Authorization', `Basic ${process.env.BASIC_AUTH_TOKEN}`);
+			.set('Authorization', `Basic ${config.get('BASIC_AUTH_TOKEN')}`);
 	}
 
 	public static async put(path: string, data: any): Promise<any> {
 		const response = await request(app)
 			.put(path)
 			.query({ data })
-			.set('Authorization', `Basic ${process.env.BASIC_AUTH_TOKEN}`);
+			.set('Authorization', `Basic ${config.get('BASIC_AUTH_TOKEN')}`);
 
 		return { status: response.statusCode, data: (response as any)._body };
 	}
@@ -28,7 +31,7 @@ class MockApiAdapter {
 		const response = await request(app)
 			.post(path)
 			.query(data)
-			.set('Authorization', `Basic ${process.env.BASIC_AUTH_TOKEN}`);
+			.set('Authorization', `Basic ${config.get('BASIC_AUTH_TOKEN')}`);
 
 		return { status: response.statusCode, data: (response as any)._body };
 	}
@@ -36,7 +39,7 @@ class MockApiAdapter {
 	public static async del(path: string): Promise<any> {
 		const response = await request(app)
 			.delete(path)
-			.set('Authorization', `Basic ${process.env.BASIC_AUTH_TOKEN}`);
+			.set('Authorization', `Basic ${config.get('BASIC_AUTH_TOKEN')}`);
 
 		return { status: response.statusCode, data: (response as any)._body };
 	}

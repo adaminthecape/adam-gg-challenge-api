@@ -2,6 +2,7 @@ import { config as configureEnv } from 'dotenv';
 import { IReq } from '../sharedTypes';
 import { handleError } from '../utils';
 import redis, { RedisClientType } from 'redis';
+import { EnvironmentService } from './EnvironmentService';
 
 export async function redisGet(db: any, path: string): Promise<any> {
 	// validate connection
@@ -115,8 +116,10 @@ export class Database {
 		try {
 			configureEnv();
 
-			const url = process.env.REDIS_HOST;
-			const port = process.env.REDIS_PORT;
+			const config = new EnvironmentService(process.env);
+
+			const url = config.get('REDIS_HOST');
+			const port = config.get('REDIS_PORT');
 
 			const redisClient = redis.createClient({
 				legacyMode: true,

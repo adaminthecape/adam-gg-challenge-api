@@ -2,14 +2,17 @@ import express from 'express';
 import cors from 'cors';
 import { config as configureEnv } from 'dotenv';
 import { importDefaultUsers } from '../controllers/auth';
+import { EnvironmentService } from '../models/EnvironmentService';
 
 const auth = express.Router();
 
 configureEnv();
 
+const config = new EnvironmentService(process.env);
+
 auth.use(
 	cors({
-		origin: process.env.UI_ORIGIN_URL,
+		origin: config.get('UI_ORIGIN_URL'),
 	})
 );
 

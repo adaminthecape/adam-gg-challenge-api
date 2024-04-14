@@ -4,14 +4,17 @@ import { config as configureEnv } from 'dotenv';
 import { IReq, IRes } from '../sharedTypes';
 import axios from 'axios';
 import { handleError } from '../utils';
+import { EnvironmentService } from '../models/EnvironmentService';
 
 const weather = express.Router();
 
 configureEnv();
 
+const config = new EnvironmentService(process.env);
+
 weather.use(
 	cors({
-		origin: process.env.UI_ORIGIN_URL,
+		origin: config.get('UI_ORIGIN_URL'),
 	})
 );
 
@@ -61,7 +64,7 @@ weather.get('/', async (req: IReq, res: IRes, next: NextFunction) => {
 				`https://api.openweathermap.org/geo/1.0/direct`,
 				{
 					params: {
-						appid: process.env.WEATHER_API_KEY,
+						appid: config.get('WEATHER_API_KEY'),
 						limit: 1,
 						q: placename,
 					},
@@ -96,7 +99,7 @@ weather.get('/', async (req: IReq, res: IRes, next: NextFunction) => {
 			`https://api.openweathermap.org/data/2.5/weather`,
 			{
 				params: {
-					// appid: process.env.WEATHER_API_KEY,
+					appid: config.get('WEATHER_API_KEY'),
 					lat,
 					lon,
 				},

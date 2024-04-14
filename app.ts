@@ -1,5 +1,4 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import redis, { RedisClientType } from 'redis';
 import cors from 'cors';
 import { config as configureEnv } from 'dotenv';
@@ -14,8 +13,11 @@ import path from 'path';
 import showdown from 'showdown';
 import fs from 'node:fs';
 import { endpoints } from './docs/endpoints';
+import { EnvironmentService } from './models/EnvironmentService';
 
 configureEnv();
+
+const configService = new EnvironmentService(process.env);
 
 const app = express();
 
@@ -27,10 +29,14 @@ export class RedisHelpers {
 	public static async getRedisClient(): Promise<any> {
 		const client = redis.createClient({
 			legacyMode: true,
-			url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+			url: `redis://${configService.get(
+				'REDIS_HOST'
+			)}:${configService.get('REDIS_PORT')}`,
 		});
 
-		client.on('error', (error: unknown) => console.error('Error:', error));
+		client.on('error', (error: unknown) =>
+			console.error('Redis ERROR:', error)
+		);
 
 		await client?.connect?.();
 
@@ -168,6 +174,7 @@ export class AuthHelpers {
 			console.log('Authenticated for route:', req.url);
 
 			req.db = redisClient;
+			req.config = configService;
 
 			next();
 		} catch (e) {
@@ -218,7 +225,7 @@ app.get('/docs', async (req, res) => {
 // Specify origin URL - you must set your Origin header to this
 app.use(
 	cors({
-		origin: process.env.UI_ORIGIN_URL,
+		origin: configService.get('UI_ORIGIN_URL'),
 	})
 );
 
