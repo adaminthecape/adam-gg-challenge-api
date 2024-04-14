@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"target": "es2022",
+		"module": "es2022",
+		"moduleResolution": "Node",
+		"outDir": "dist",
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"resolveJsonModule": true
+	},
+	"include": ["./src/**/*.tsx", "./src/**/*.ts", "src/jest.config.ts"],
+	"exclude": ["node_modules"]
+}
