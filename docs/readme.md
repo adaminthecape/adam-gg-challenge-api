@@ -1,4 +1,4 @@
-# Interview challenge app
+# Interview challenge API
 
 ## Running the API
 
