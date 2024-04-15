@@ -14,6 +14,7 @@ import showdown from 'showdown';
 import fs from 'node:fs';
 import { endpoints } from './docs/endpoints';
 import { EnvironmentService } from './models/EnvironmentService';
+import { setDefaultUsers } from './controllers/auth';
 
 configureEnv();
 
@@ -127,6 +128,9 @@ export class AuthHelpers {
 	): Promise<any> {
 		console.log(`\n******** New Request: ${req.url} ********`);
 		try {
+			// ensure there is a user to query
+			await AuthHelpers.setDefaultUser(req, res, next);
+
 			// Decode the token, get the user's id, and add it to the req
 			const { url, params, query, body } = req;
 
@@ -180,6 +184,36 @@ export class AuthHelpers {
 		} catch (e) {
 			handleError({
 				message: 'Could not validate user',
+				error: e,
+			});
+
+			return res.sendStatus(500);
+		}
+	}
+
+	/**
+	 * Pre-fill the database with a basic user to enable using the API.
+	 * @param req
+	 * @param res
+	 * @param next
+	 */
+	public static async setDefaultUser(
+		req: IReq,
+		res: IRes,
+		next: any
+	): Promise<any> {
+		console.log(`\n******** Setting default users ********`);
+		try {
+			await setDefaultUsers(req);
+
+			next();
+		} catch (e) {
+			if (e.message.startsWith('Some users exist')) {
+				return next();
+			}
+
+			handleError({
+				message: 'Could not pre-fill users',
 				error: e,
 			});
 
