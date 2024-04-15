@@ -60,16 +60,18 @@ weather.get('/', async (req: IReq, res: IRes, next: NextFunction) => {
 		}>;
 
 		try {
-			dataFromPlacename = await axios.get(
-				`${config.get('WEATHER_API_URL')}/geo/1.0/direct`,
-				{
-					params: {
-						appid: config.get('WEATHER_API_KEY'),
-						limit: 1,
-						q: placename,
-					},
-				}
-			);
+			dataFromPlacename = (
+				await axios.get(
+					`${config.get('WEATHER_API_URL')}/geo/1.0/direct`,
+					{
+						params: {
+							appid: config.get('WEATHER_API_KEY'),
+							limit: 1,
+							q: placename,
+						},
+					}
+				)
+			)?.data;
 
 			if (Array.isArray(dataFromPlacename) && dataFromPlacename.length) {
 				if (dataFromPlacename[0]?.lat) {
