@@ -28,6 +28,20 @@ On Windows, you may need to [install WSL](TODO), then install an Ubuntu distribu
 
 Finally, run `redis-cli` in the terminal, and you can run commands in your Redis instance. For example, run `GET todos` in the Redis terminal, and you should see a list of todos saved in memory.
 
+## Setting up your environment variables
+
+You will need to add a `.env` file in the root directory with the following keys:
+
+-   `NODE_ENV` - standard Node.js environment (production, development)
+-   `UI_ORIGIN_URL` - Origin that will be expected to make requests, per CORS. This must be specified in your REST client when making requests. I use `http://localhost:3000`.
+-   `API_PORT` - Port this API will operate on (I am using `5000`)
+-   `REDIS_HOST` - URL of your Redis instance
+-   `REDIS_PORT` - Port for your Redis instance
+-   `REDIS_PASSWORD` - Password for your Redis instance (not necessary)
+-   `BASIC_AUTH_TOKEN` - base64 encoded string of a username & password joined with a colon `:`. This is used for Jest testing and corresponds to `testuser` and `testpassword`. You can generate this string as below, in [Querying the API](#querying-the-api)
+-   `WEATHER_API_URL` - The URL of the weather service to use; this uses `https://api.openweathermap.org` (other services will need code configuration to specify endpoints & input data)
+-   `WEATHER_API_KEY` - Your OpenWeatherMap API key.
+
 ## Querying the API
 
 You will need a REST client, or `curl`, or the method of your choice.
