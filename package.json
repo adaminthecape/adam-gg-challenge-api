@@ -5,8 +5,7 @@
 	"main": "app.ts",
 	"type": "module",
 	"scripts": {
-		"test": "mocha -r ts-node/register ./tests/*.spec.ts",
-		"jest": "jest"
+		"test": "jest"
 	},
 	"author": "Adam",
 	"license": "MIT",
