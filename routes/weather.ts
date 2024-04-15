@@ -61,7 +61,7 @@ weather.get('/', async (req: IReq, res: IRes, next: NextFunction) => {
 
 		try {
 			dataFromPlacename = await axios.get(
-				`https://api.openweathermap.org/geo/1.0/direct`,
+				`${config.get('WEATHER_API_URL')}/geo/1.0/direct`,
 				{
 					params: {
 						appid: config.get('WEATHER_API_KEY'),
@@ -96,7 +96,7 @@ weather.get('/', async (req: IReq, res: IRes, next: NextFunction) => {
 
 	try {
 		const { data } = await axios.get(
-			`https://api.openweathermap.org/data/2.5/weather`,
+			`${config.get('WEATHER_API_URL')}/data/2.5/weather`,
 			{
 				params: {
 					appid: config.get('WEATHER_API_KEY'),

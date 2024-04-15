@@ -12,6 +12,7 @@ const cEnvironmentSchema = z.strictObject({
 	REDIS_PASSWORD: z.optional(z.string()),
 	BASIC_AUTH_TOKEN: z.optional(z.string()),
 	WEATHER_API_KEY: z.optional(z.string()),
+	WEATHER_API_URL: z.optional(z.string()),
 });
 
 type Environment = z.infer<typeof cEnvironmentSchema>;
@@ -50,9 +51,15 @@ export class EnvironmentService {
 			throw new Error('API origin URL missing! Set UI_ORIGIN_URL');
 		}
 
-		if (!vars.WEATHER_API_KEY) {
+		if (!vars.WEATHER_API_KEY || !vars.WEATHER_API_URL) {
 			console.warn(
-				'Weather API key missing! Set WEATHER_API_KEY (optional)'
+				'Weather API data missing! Set WEATHER_API_KEY and WEATHER_API_URL (optional)'
+			);
+		}
+
+		if (!vars.BASIC_AUTH_TOKEN) {
+			console.warn(
+				'Test user auth token missing! Set BASIC_AUTH_TOKEN (optional)'
 			);
 		}
 
