@@ -2,7 +2,9 @@
 
 ## Running the API
 
-1. Go to the target directory (e.g. `challenge-api-express`).
+1. Clone the repository.
+1. Go to the target directory (e.g. `adam-gg-challenge-api`).
+1. Run `npm install`.
 1. Run `tsx server.ts` or `ts-node server.ts`.
 1. If you see `API listening on port <port>`, you're good to go.
 
