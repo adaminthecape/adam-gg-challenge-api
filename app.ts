@@ -123,7 +123,7 @@ export class AuthHelpers {
 			const db = await Database.getInstance(req);
 
 			// ensure there is a user to query
-			await AuthHelpers.setDefaultUser({ db, query: {} });
+			await AuthHelpers.setDefaultUser();
 
 			// Decode the token, get the user's id, and add it to the req
 			const { url, params, query, body } = req;
@@ -191,7 +191,7 @@ export class AuthHelpers {
 	 * @param res
 	 * @param next
 	 */
-	public static async setDefaultUser(req: IReq): Promise<any> {
+	public static async setDefaultUser(): Promise<any> {
 		console.log(`\n******** Setting default users ********`);
 		try {
 			if (!(defaultUsers && typeof defaultUsers === 'object')) {
