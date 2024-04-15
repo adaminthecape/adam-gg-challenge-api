@@ -189,7 +189,7 @@ export class AuthHelpers {
 }
 
 /**
- * Go to {process.env.API_URL}/docs to see the output.
+ * Go to <API url>/docs to see the output.
  */
 app.get('/docs', async (req, res) => {
 	const converter = new showdown.Converter();

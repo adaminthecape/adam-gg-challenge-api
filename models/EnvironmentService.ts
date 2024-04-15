@@ -5,7 +5,6 @@ const cEnvironmentSchema = z.strictObject({
 		z.union([z.literal('production'), z.literal('development')])
 	),
 	UI_ORIGIN_URL: z.optional(z.string()),
-	API_URL: z.optional(z.string()),
 	API_PORT: z.optional(z.string()),
 	REDIS_HOST: z.optional(z.string()),
 	REDIS_PORT: z.optional(z.string()),
@@ -31,8 +30,8 @@ export class EnvironmentService {
 			}
 		});
 
-		if (!(vars.API_PORT && vars.API_URL)) {
-			throw new Error('API config missing! Set API_PORT and API_URL');
+		if (!vars.API_PORT) {
+			throw new Error('API config missing! Set API_PORT');
 		}
 
 		if (!(vars.REDIS_HOST && vars.REDIS_PORT)) {
