@@ -5,7 +5,7 @@ import { config as configureEnv } from 'dotenv';
 import { IReq, IRes } from './sharedTypes';
 import { handleError } from './utils';
 import todos from './routes/todos';
-import { Database } from './models/Database';
+import { Database, redisGet, redisSet } from './models/Database';
 import md5 from 'md5';
 import auth from './routes/auth';
 import weather from './routes/weather';
@@ -14,7 +14,7 @@ import showdown from 'showdown';
 import fs from 'node:fs';
 import { endpoints } from './docs/endpoints';
 import { EnvironmentService } from './models/EnvironmentService';
-import { setDefaultUsers } from './controllers/auth';
+import defaultUsers from './defaultData/users.json';
 
 configureEnv();
 
@@ -44,14 +44,6 @@ export class RedisHelpers {
 		return client;
 	}
 }
-
-let redisClient: RedisClientType;
-
-// Initiate the in-memory database
-// This format avoids error TS1378 (top-level await) in tests
-(async () => {
-	redisClient = await RedisHelpers.getRedisClient();
-})();
 
 export class AuthHelpers {
 	constructor() {}
@@ -128,8 +120,10 @@ export class AuthHelpers {
 	): Promise<any> {
 		console.log(`\n******** New Request: ${req.url} ********`);
 		try {
+			const db = await Database.getInstance(req);
+
 			// ensure there is a user to query
-			await AuthHelpers.setDefaultUser(req, res, next);
+			await AuthHelpers.setDefaultUser({ db, query: {} });
 
 			// Decode the token, get the user's id, and add it to the req
 			const { url, params, query, body } = req;
@@ -197,30 +191,40 @@ export class AuthHelpers {
 	 * @param res
 	 * @param next
 	 */
-	public static async setDefaultUser(
-		req: IReq,
-		res: IRes,
-		next: any
-	): Promise<any> {
+	public static async setDefaultUser(req: IReq): Promise<any> {
 		console.log(`\n******** Setting default users ********`);
 		try {
-			await setDefaultUsers(req);
-
-			next();
-		} catch (e) {
-			if (e.message.startsWith('Some users exist')) {
-				return next();
+			if (!(defaultUsers && typeof defaultUsers === 'object')) {
+				throw new Error('Could not get default users!');
 			}
 
+			const existingUsers = await redisGet(redisClient, 'users');
+
+			if (!existingUsers) {
+				await redisSet(redisClient, 'users', defaultUsers.users);
+			}
+		} catch (e) {
 			handleError({
 				message: 'Could not pre-fill users',
 				error: e,
 			});
 
-			return res.sendStatus(500);
+			return;
 		}
 	}
 }
+
+let redisClient: RedisClientType;
+
+// Initiate the in-memory database
+// This format avoids error TS1378 (top-level await) in tests
+(async () => {
+	redisClient = await RedisHelpers.getRedisClient();
+})();
+// Set users, if none exist
+(async () => {
+	redisClient = await AuthHelpers.setDefaultUser();
+})();
 
 /**
  * Go to <API url>/docs to see the output.
