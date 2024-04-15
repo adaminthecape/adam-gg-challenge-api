@@ -84,8 +84,9 @@ export const endpoints = {
 	},
 	weather: {
 		'[get] /weather': {
-			description: 'Import the default user(s) into the database.',
-			summary: 'Import users',
+			description:
+				'Retrieve current weather information for a given location.',
+			summary: 'Get cloud status',
 			params: [
 				'(body) [lat] {String} Latitude (as string) (optional)',
 				'(body) [lon] {String} Longitude (as string) (optional)',

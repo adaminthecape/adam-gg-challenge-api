@@ -276,9 +276,9 @@ Import the default user(s) into the database.
 -   200 - Users were successfully imported.
 -   500 - Something went wrong; users may not have been imported.
 
-### `[get] /weather` - Import users
+### `[get] /weather` - Get cloud status
 
-Import the default user(s) into the database.
+Retrieve current weather information for a given location.
 
 #### Parameters
 
